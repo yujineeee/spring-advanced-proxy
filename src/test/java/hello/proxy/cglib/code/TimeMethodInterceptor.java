@@ -1,24 +1,27 @@
-package hello.proxy.jdkdynamic.code;
+package hello.proxy.cglib.code;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.proxy.MethodInterceptor;
+import org.springframework.cglib.proxy.MethodProxy;
 
 @Slf4j
-public class TimeInvocationHandler implements InvocationHandler {
+public class TimeMethodInterceptor implements MethodInterceptor {
 
     private final Object target;
 
-    public TimeInvocationHandler(Object target) {
+    public TimeMethodInterceptor(Object target) {
         this.target = target;
     }
 
+
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object intercept(Object obj, Method method, Object[] args, MethodProxy methodProxy)
+        throws Throwable {
         log.info("TimeProxy 실행");
         long startTime = System.currentTimeMillis();
 
-        Object result = method.invoke(target, args);
+        Object result = methodProxy.invoke(target, args);
 
         long endTime = System.currentTimeMillis();
         long resultTime = endTime - startTime;
